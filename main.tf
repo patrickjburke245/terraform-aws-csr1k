@@ -18,7 +18,7 @@ data "aws_ami" "this" {
 
 # Running config template
 data "template_file" "running_config" {
-  template = file("./running-config.tpl")
+  template = file("${path.module}/running-config.tpl")
 
   vars = {
     admin_password = var.admin_password
