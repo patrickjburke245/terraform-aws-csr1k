@@ -37,13 +37,13 @@ variable "vpc_id" {
   type        = string
 }
 
-variable "gi0_subnet_id" {
-  description = "Existing subnet ID"
+variable "gi1_subnet_id" {
+  description = "Existing subnet ID for interface GigabitEthernet1"
   type        = string
 }
 
-variable "gi1_subnet_id" {
-  description = "Existing subnet ID"
+variable "gi2_subnet_id" {
+  description = "Existing subnet ID interface GigabitEthernet1"
   type        = string
 }
 

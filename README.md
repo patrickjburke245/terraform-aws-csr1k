@@ -10,8 +10,8 @@ module "csr1k" {
   version = "1.0.0"
 
   vpc_id        = "vpc-0a1b2c3d4e"
-  gi0_subnet_id = "subnet-0a1b2c3d4e"
-  gi1_subnet_id = "subnet-1b2c3d4e5f"
+  gi1_subnet_id = "subnet-0a1b2c3d4e"
+  gi2_subnet_id = "subnet-1b2c3d4e5f"
   key_name      = "ec2-keypair"
 }
 ```
@@ -40,8 +40,8 @@ module "csr1k" {
   version = "1.0.0"
 
   vpc_id        = module.csr_vpc.vpc_id
-  gi0_subnet_id = module.csr_vpc.public_subnets[0]
-  gi1_subnet_id = module.csr_vpc.private_subnets[0]
+  gi1_subnet_id = module.csr_vpc.public_subnets[0]
+  gi2_subnet_id = module.csr_vpc.private_subnets[0]
   key_name      = "ec2-keypair"
 }
 ```

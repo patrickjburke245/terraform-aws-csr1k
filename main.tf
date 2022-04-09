@@ -26,39 +26,6 @@ data "template_file" "running_config" {
   }
 }
 
-# Create a Security Group for Cisco CSR Gi0
-resource "aws_security_group" "gi0_sg" {
-  vpc_id = var.vpc_id
-  name   = "CSR GigabitEthernet0 Security Group"
-
-  dynamic "ingress" {
-    for_each = local.ingress_ports
-
-    content {
-      description = ingress.key
-      from_port   = ingress.value.port
-      to_port     = ingress.value.port
-      protocol    = ingress.value.protocol
-      cidr_blocks = ingress.value.cidr_blocks
-    }
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = var.egress_cidr_blocks
-  }
-
-  tags = {
-    Name = "csr-gi0-sg"
-  }
-
-  lifecycle {
-    ignore_changes = [ingress, egress]
-  }
-}
-
 # Create a Security Group for Cisco CSR Gi1
 resource "aws_security_group" "gi1_sg" {
   vpc_id = var.vpc_id
@@ -92,15 +59,36 @@ resource "aws_security_group" "gi1_sg" {
   }
 }
 
-# Create eni for CSR Gi0
-resource "aws_network_interface" "csr_gi0" {
-  description       = "CSR GigabitEthernet0"
-  subnet_id         = var.gi0_subnet_id
-  security_groups   = [aws_security_group.gi0_sg.id]
-  source_dest_check = false
+# Create a Security Group for Cisco CSR Gi2
+resource "aws_security_group" "gi2_sg" {
+  vpc_id = var.vpc_id
+  name   = "CSR GigabitEthernet2 Security Group"
+
+  dynamic "ingress" {
+    for_each = local.ingress_ports
+
+    content {
+      description = ingress.key
+      from_port   = ingress.value.port
+      to_port     = ingress.value.port
+      protocol    = ingress.value.protocol
+      cidr_blocks = ingress.value.cidr_blocks
+    }
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = var.egress_cidr_blocks
+  }
 
   tags = {
-    Name = "csr-gi0-eni"
+    Name = "csr-gi2-sg"
+  }
+
+  lifecycle {
+    ignore_changes = [ingress, egress]
   }
 }
 
@@ -116,13 +104,25 @@ resource "aws_network_interface" "csr_gi1" {
   }
 }
 
-# Allocate EIP for CSR Gi0
-resource "aws_eip" "this" {
-  vpc               = true
-  network_interface = aws_network_interface.csr_gi0.id
+# Create eni for CSR Gi2
+resource "aws_network_interface" "csr_gi2" {
+  description       = "CSR GigabitEthernet2"
+  subnet_id         = var.gi2_subnet_id
+  security_groups   = [aws_security_group.gi2_sg.id]
+  source_dest_check = false
 
   tags = {
-    "Name" = "CSR-Gi0-EIP@${var.csr_hostname}"
+    Name = "csr-gi2-eni"
+  }
+}
+
+# Allocate EIP for CSR Gi1
+resource "aws_eip" "this" {
+  vpc               = true
+  network_interface = aws_network_interface.csr_gi1.id
+
+  tags = {
+    "Name" = "CSR-Gi1-EIP@${var.csr_hostname}"
   }
 }
 
@@ -133,12 +133,12 @@ resource "aws_instance" "this" {
   key_name      = var.key_name
 
   network_interface {
-    network_interface_id = aws_network_interface.csr_gi0.id
+    network_interface_id = aws_network_interface.csr_gi1.id
     device_index         = 0
   }
 
   network_interface {
-    network_interface_id = aws_network_interface.csr_gi1.id
+    network_interface_id = aws_network_interface.csr_gi2.id
     device_index         = 1
   }
 
