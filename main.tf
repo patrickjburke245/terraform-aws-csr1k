@@ -17,6 +17,7 @@ data "aws_ami" "this" {
 }
 
 # Running config template
+/*
 data "template_file" "running_config" {
   template = file("${path.module}/running-config.tpl")
 
@@ -25,6 +26,17 @@ data "template_file" "running_config" {
     hostname       = var.csr_hostname
   }
 }
+*/
+
+# template replace
+locals {
+  running_config = templatefile("running-config.tpl", {
+    admin_password = var.admin_password
+    hostname       = var.csr_hostname
+  })
+}
+
+#running_config = local.running_config
 
 # Create a Security Group for Cisco CSR Gi1
 resource "aws_security_group" "gi1_sg" {
