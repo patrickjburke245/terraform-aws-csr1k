@@ -12,7 +12,7 @@ data "aws_ami" "this" {
 
   filter {
     name   = "name"
-    values = var.csr_ami == var.csr_ami_byol_ami
+    values = var.csr_ami_byol_ami
   }
 }
 
