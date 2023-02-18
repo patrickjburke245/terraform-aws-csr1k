@@ -84,7 +84,12 @@ variable "egress_cidr_blocks" {
 }
 
 locals {
-  csr_bootstrap   = var.custom_bootstrap ? var.bootstrap_data : data.template_file.running_config.rendered
+  running_config = templatefile("running-config.tpl", {
+    admin_password = var.admin_password
+    hostname       = var.csr_hostname
+  })
+  
+  csr_bootstrap   = var.custom_bootstrap ? var.bootstrap_data : running_config
   ssh_cidr_blocks = var.ssh_allow_ip != null ? var.ssh_allow_ip : ["${chomp(data.http.my_public_ip.body)}/32"]
 
   ingress_ports = {
