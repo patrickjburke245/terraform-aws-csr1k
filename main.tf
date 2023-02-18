@@ -6,6 +6,7 @@ data "http" "my_public_ip" {
 }
 
 # CSR AMI
+/*
 data "aws_ami" "this" {
   owners      = ["aws-marketplace"]
   most_recent = true
@@ -15,6 +16,7 @@ data "aws_ami" "this" {
     values = [var.csr_ami_byol_ami]
   }
 }
+*/
 
 # Running config template
 /*
