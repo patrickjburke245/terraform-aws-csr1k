@@ -142,7 +142,7 @@ resource "aws_eip" "this" {
 
 # Create CSR EC2 instance
 resource "aws_instance" "this" {
-  ami           = data.aws_ami.this.id
+  ami           = "ami-0762f25b0f583389d"
   instance_type = var.instance_type
   key_name      = var.key_name
 
