@@ -29,12 +29,14 @@ data "template_file" "running_config" {
 */
 
 # template replace
+/*
 locals {
   running_config = templatefile("running-config.tpl", {
     admin_password = var.admin_password
     hostname       = var.csr_hostname
   })
 }
+*/
 
 #running_config = local.running_config
 
